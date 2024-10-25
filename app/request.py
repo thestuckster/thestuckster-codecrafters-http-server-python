@@ -31,7 +31,7 @@ def _parse_request_line(data: str) -> tuple:
     #GET /index.html HTTP/1.1\r\n
     end_of_request_line = data.find("\r\n")
     request_line = data[:end_of_request_line]
-    parts = request_line.spit(" ")
+    parts = request_line.split(" ")
     
     return parts[0], parts[1], parts[2]
 
