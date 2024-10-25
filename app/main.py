@@ -12,7 +12,7 @@ def main():
 
     while True:
         client, addr = server_socket.accept()  # wait for client
-        threading.Thread(target=handle_incoming_request(client, addr))
+        threading.Thread(target=lambda: handle_incoming_request(client, addr)).start()
         # # get a message from the client
         # data = client.recv(4096)
         # request = parse_incoming_request(data)
