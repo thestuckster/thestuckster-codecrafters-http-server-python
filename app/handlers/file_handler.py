@@ -16,7 +16,9 @@ def handle_file(request: Request, client):
         client.sendall(response.to_response_bytes())
 
 def _file_exists(file_name: str) -> bool:
-    return os.path.isfile(file_name)
+    exists = os.path.isfile(file_name)
+    print("Able to find file {file_name}? - {exists}".format(file_name=file_name, exists=exists))
+    return exists
 
 def _build_not_found_response(request: Request) -> Response:
     return Response(request.http_version, 404, "Not Found", {}, None)
