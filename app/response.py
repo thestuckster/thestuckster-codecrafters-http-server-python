@@ -6,13 +6,15 @@ class Response:
     body_raw: str = None
     body: bytes = None
 
-    def __init__(self, http_version: str, status_code: int, status_phrase: str, headers: dict, body: str):
+    def __init__(self, http_version: str, status_code: int, status_phrase: str, headers: dict, body: str | None):
         self.http_version = http_version
         self.status_code = status_code
         self.status_phrase = status_phrase
         self.headers = headers
-        self.body = body.encode()
-        self.body_raw = body
+
+        if body is not None:
+            self.body = body.encode()
+            self.body_raw = body
 
     def to_response_bytes(self) -> bytes:
         response = "{version} {code} {phrase}\r\n".format(version=self.http_version, code=self.status_code,

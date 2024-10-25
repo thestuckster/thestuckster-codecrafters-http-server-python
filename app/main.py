@@ -1,6 +1,7 @@
 import socket
 import threading
 
+from app.handlers.file_handler import handle_file
 from app.request import parse_incoming_request
 from app.request import Request
 from app.handlers.echo_handler import handle_echo
@@ -13,14 +14,6 @@ def main():
     while True:
         client, addr = server_socket.accept()  # wait for client
         threading.Thread(target=lambda: handle_incoming_request(client, addr)).start()
-        # # get a message from the client
-        # data = client.recv(4096)
-        # request = parse_incoming_request(data)
-        #
-        # # send a message to the client
-        # # client.sendall(b"HTTP/1.1 200 OK\r\n\r\n")
-        # route_request(request, client)
-
 
 def handle_incoming_request(client, addr):
     data = client.recv(4096)
@@ -34,6 +27,8 @@ def route_request(request: Request, client):
         handle_echo(request, client)
     elif "user-agent" in request.target:
         handle_user_agent_request(request, client)
+    elif "files" in request.target:
+        handle_file(request, client)
     elif request.target != "/":
         client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
     else:
