@@ -3,7 +3,7 @@ import socket
 from app.request import parse_incoming_request
 from app.request import Request
 from app.handlers.echo_handler import handle_echo
-
+from app.handlers.user_agent_handler import handle_user_agent_request
 
 def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
@@ -20,8 +20,11 @@ def main():
 
 
 def route_request(request: Request, client):
+    # TODO: come up with better routing later
     if "echo" in request.target:
         handle_echo(request, client)
+    elif "user-agent" in request.target:
+        handle_user_agent_request(request, client)
     elif request.target != "/":
         client.sendall(b"HTTP/1.1 404 Not Found\r\n\r\n")
     else:
