@@ -45,6 +45,6 @@ def _parse_headers(data: str) -> dict:
         if key_value == "":
             continue
         parts = key_value.split(":")
-        headers[parts[0]] = parts[1]
+        headers[parts[0]] = parts[1].strip()
 
     return headers

@@ -4,7 +4,7 @@ from app.response import Response
 
 def handle_user_agent_request(request: Request, client):
 
-    agent = request.headers.get('User-Agent')
+    agent = request.headers.get('User-Agent').strip()
     headers = {
         "Content-Type": "text/plain",
         "Content-Length": str(len(agent))
