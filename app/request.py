@@ -16,7 +16,6 @@ class Request:
         return self.headers is not None and key in self.headers
 
 
-
 def parse_incoming_request(data: bytes) -> Request:
     
     # GET /index.html HTTP/1.1\r\nHost: localhost:4221\r\nUser-Agent: curl/7.64.1\r\nAccept: */*\r\n\r\n
@@ -42,8 +41,13 @@ def _parse_headers(data: str) -> dict:
     headers = {}
     
     end_of_request_line = data.find("\r\n")
-    headers_string = data[end_of_request_line:]
+    headers_string = data[end_of_request_line+2:]
     headers_key_values = headers_string.split("\r\n")
     for key_value in headers_key_values:
+        #skip empty values, this is a parsing issue.
+        if key_value == "":
+            continue
         parts = key_value.split(":")
         headers[parts[0]] = parts[1]
+
+    return headers
