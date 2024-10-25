@@ -7,7 +7,7 @@ def handle_file(request: Request, client):
     file_name = request.target.split("/files/")[1]
 
     response: Response | None = None
-    if not _file_exists("/tmp/" + file_name):
+    if not _file_exists(_get_relative_file_path(file_name)):
         response = _build_not_found_response(request)
     else:
         response = _build_file_response(request, file_name)
@@ -19,13 +19,14 @@ def _file_exists(file_name: str) -> bool:
     return os.path.isfile(file_name)
 
 def _build_not_found_response(request: Request) -> Response:
-    return Response(request.http_version, 400, "Not Found", {}, None)
+    return Response(request.http_version, 404, "Not Found", {}, None)
 
 
 def _build_file_response(request: Request, file_name) -> Response:
-    file_size = os.stat("/tmp/" + file_name).st_size
+    path = _get_relative_file_path(file_name)
+    file_size = os.stat(path).st_size
 
-    with open("/tmp/" + file_name, "r") as f:
+    with open(path, "r") as f:
         data = f.read()
 
         headers = {
@@ -34,3 +35,7 @@ def _build_file_response(request: Request, file_name) -> Response:
         }
 
         return Response(request.http_version, 200, "OK", headers, data)
+
+
+def _get_relative_file_path(file_name: str) -> str:
+    return os.getcwd() + "/../tmp/" + file_name
