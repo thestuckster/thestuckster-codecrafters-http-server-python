@@ -1,4 +1,5 @@
 import os
+import sys
 
 from app.request import Request
 from app.response import Response
@@ -39,5 +40,8 @@ def _build_file_response(request: Request, file_name) -> Response:
         return Response(request.http_version, 200, "OK", headers, data)
 
 
+def _get_file_directory():
+    return sys.argv[2]
+
 def _get_relative_file_path(file_name: str) -> str:
-    return os.getcwd() + "/../tmp/" + file_name
+    return _get_file_directory() + "/" + file_name
