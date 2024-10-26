@@ -30,12 +30,9 @@ def _create_file(request: Request, client):
     with open(path, "w") as file:
         file.write(request.body_raw)
 
-    file_size = os.stat(path).st_size
-    headers = {
-        "Content-Type": "application/octet-stream",
-        "Content-Length": file_size,
-    }
-    client.sendall(Response(request.http_version, 201, "Created", headers, None).to_response_bytes())
+    response = Response(request.http_version, 201, "Created", {}, None)
+    print("sending response: " + response.to_response_bytes().decode("utf-8"))
+    client.sendall(response.to_response_bytes())
 
 
 def _file_exists(file_name: str) -> bool:
