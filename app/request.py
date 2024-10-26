@@ -1,14 +1,20 @@
 class Request:
-    method = None
-    target = None
-    http_version = None
-    headers = None
+    method: str = None
+    target: str = None
+    http_version: str = None
+    headers: dict = None
+    body: bytes = None
+    body_raw: str = None
 
-    def __init__(self, method: str, target: str, http_version: str, headers: dict):
+    def __init__(self, method: str, target: str, http_version: str, headers: dict, body: str | None = None):
         self.method = method
         self.target = target
         self.http_version = http_version
         self.headers = headers
+
+        if body is not None:
+            self.body = body.encode()
+            self.body_raw = body
 
     def has_header(self, key: str) -> bool:
         return self.headers is not None and key in self.headers
@@ -19,8 +25,9 @@ def parse_incoming_request(data: bytes) -> Request:
     data_string = data.decode("utf-8")
     method, target, http_version = _parse_request_line(data_string)
     headers = _parse_headers(data_string)
+    body = _parse_request_body(data_string)
 
-    return Request(method, target, http_version, headers)
+    return Request(method, target, http_version, headers, body)
 
 
 def _parse_request_line(data: str) -> tuple:
@@ -48,3 +55,9 @@ def _parse_headers(data: str) -> dict:
         headers[parts[0]] = parts[1].strip()
 
     return headers
+
+
+def _parse_request_body(data: str) -> str | None:
+    end_of_headers_index = data.rfind("\r\n")
+    body = data[end_of_headers_index+2:]
+    return body if body != "" else None
