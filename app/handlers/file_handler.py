@@ -27,8 +27,8 @@ def _get_file(request: Request, client):
 
 def _create_file(request: Request, client):
     path = _get_relative_file_path(request.target.split("/files/")[1])
-    with open(path, "wb") as file:
-        file.write(request.body)
+    with open(path, "w") as file:
+        file.write(request.body_raw)
 
     file_size = os.stat(path).st_size
     headers = {
