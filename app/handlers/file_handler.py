@@ -4,11 +4,13 @@ import sys
 from app.request import Request
 from app.response import Response
 
+
 def handle_file(request: Request, client):
     if request.method == 'GET':
         _get_file(request, client)
     elif request.method == 'POST':
         _create_file(request, client)
+
 
 def _get_file(request: Request, client):
     file_name = request.target.split("/files/")[1]
@@ -33,7 +35,7 @@ def _create_file(request: Request, client):
         "Content-Type": "application/octet-stream",
         "Content-Length": file_size,
     }
-    client.sendall(Response(request.http_version, 201, "Created", headers, None))
+    client.sendall(Response(request.http_version, 201, "Created", headers, None).to_response_bytes())
 
 
 def _file_exists(file_name: str) -> bool:

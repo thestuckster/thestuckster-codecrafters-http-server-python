@@ -52,6 +52,8 @@ def _parse_headers(data: str) -> dict:
         if key_value == "":
             continue
         parts = key_value.split(":")
+        if len(parts) != 2:
+            continue  # this is likely the body so we shouldn't ignore it for now
         headers[parts[0]] = parts[1].strip()
 
     return headers
@@ -59,5 +61,5 @@ def _parse_headers(data: str) -> dict:
 
 def _parse_request_body(data: str) -> str | None:
     end_of_headers_index = data.rfind("\r\n")
-    body = data[end_of_headers_index+2:]
+    body = data[end_of_headers_index + 2:]
     return body if body != "" else None
