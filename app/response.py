@@ -33,7 +33,10 @@ class Response:
 
     def _set_compression_header(self):
         if self.headers is not None and "Content-Encoding" in self.headers:
+            accepted_encodings = self.headers["Content-Encoding"].split(", ")
             # we only support gzip encoding for now
-            if self.headers["Content-Encoding"] != "gzip":
+            if "gzip" not in accepted_encodings:
                 print("we only support gzip")
                 del self.headers["Content-Encoding"]
+            else:
+                self.headers["Content-Encoding"] = "gzip"
