@@ -11,6 +11,7 @@ class Response:
         self.status_code = status_code
         self.status_phrase = status_phrase
         self.headers = headers
+        self._set_compression_header()
 
         if body is not None:
             self.body = body.encode()
@@ -29,3 +30,10 @@ class Response:
             response += self.body_raw
 
         return response.encode()
+
+    def _set_compression_header(self):
+        if self.headers is not None and "Content-Encoding" in self.headers:
+            # we only support gzip encoding for now
+            if self.headers["Content-Encoding"] != "gzip":
+                print("we only support gzip")
+                del self.headers["Content-Encoding"]

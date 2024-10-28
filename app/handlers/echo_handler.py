@@ -10,5 +10,9 @@ def handle_echo(request: Request, client):
         "Content-Type": "text/plain",
         "Content-Length": str(len(txt)),
     }
+
+    if "Accept-Encoding" in request.headers:
+        headers["Content-Encoding"] = request.headers["Accept-Encoding"]
+
     response = Response(request.http_version, 200, "OK", headers, txt)
     client.sendall(response.to_response_bytes())
