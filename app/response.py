@@ -31,7 +31,7 @@ class Response:
 
         response = self._add_headers(response)
 
-        return response.encode + encoded_body if encoded_body is not None else response.encode()
+        return response.encode() + encoded_body if encoded_body is not None else response.encode()
 
     def _add_headers(self, response):
         for key, value in self.headers.items():
