@@ -1,8 +1,10 @@
+from socket import SocketIO, socket
+
 from app.request import Request
 from app.response import Response
 
 
-def handle_echo(request: Request, client):
+def handle_echo(request: Request, client: socket):
     parts = request.target.split("echo/")
     txt = parts[1]
 
@@ -15,4 +17,5 @@ def handle_echo(request: Request, client):
         headers["Content-Encoding"] = request.headers["Accept-Encoding"]
 
     response = Response(request.http_version, 200, "OK", headers, txt)
-    client.sendall(response.to_response_bytes())
+    client.send(response.to_response_bytes())
+    # client.send(response.compress_body())
