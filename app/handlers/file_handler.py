@@ -31,7 +31,6 @@ def _create_file(request: Request, client):
         file.write(request.body_raw)
 
     response = Response(request.http_version, 201, "Created", {}, None)
-    print("sending response: " + response.to_response_bytes().decode("utf-8"))
     client.sendall(response.to_response_bytes())
 
 

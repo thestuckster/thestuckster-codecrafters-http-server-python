@@ -1,4 +1,4 @@
-from socket import SocketIO, socket
+from socket import socket
 
 from app.request import Request
 from app.response import Response
@@ -18,4 +18,3 @@ def handle_echo(request: Request, client: socket):
 
     response = Response(request.http_version, 200, "OK", headers, txt)
     client.send(response.to_response_bytes())
-    # client.send(response.compress_body())

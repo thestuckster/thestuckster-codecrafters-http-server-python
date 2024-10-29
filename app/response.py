@@ -1,5 +1,6 @@
 import gzip
 
+
 class Response:
     http_version: str = None
     status_code: int = None
@@ -26,33 +27,32 @@ class Response:
 
         encoded_body = None
         if self.body is not None:
-            encoded_body = self.compress_body()
+            encoded_body = self._encode_body()
 
-        #add headers to response
+        response = self._add_headers(response)
+
+        return response.encode + encoded_body if encoded_body is not None else response.encode()
+
+    def _add_headers(self, response):
         for key, value in self.headers.items():
             response += "{key}: {value}\r\n".format(key=key, value=value)
-        # add end of headers delim
-        response += "\r\n"
+        response += "\r\n"  # end of headers delim
+        return response
 
-        encoded_response = response.encode()
-        return encoded_response + encoded_body if encoded_body is not None else encoded_response
-
-
-    def compress_body(self) -> bytes | None:
+    def _encode_body(self) -> bytes | None:
         if "Content-Encoding" in self.headers:
-            compressed_bytes = gzip.compress(self.body, compresslevel=9)
+            compressed_bytes = gzip.compress(self.body)
             self.headers["Content-Length"] = len(compressed_bytes)
             return compressed_bytes
         else:
             return self.body
-
 
     def _set_compression_header(self):
         if self.headers is not None and "Content-Encoding" in self.headers:
             accepted_encodings = self.headers["Content-Encoding"].split(", ")
             # we only support gzip encoding for now
             if "gzip" not in accepted_encodings:
-                print("we only support gzip")
+                print("only gzip compression is accepted for now... returning response without compression")
                 del self.headers["Content-Encoding"]
             else:
                 self.headers["Content-Encoding"] = "gzip"

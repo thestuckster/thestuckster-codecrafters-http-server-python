@@ -16,9 +16,6 @@ class Request:
             self.body = body.encode()
             self.body_raw = body
 
-    def has_header(self, key: str) -> bool:
-        return self.headers is not None and key in self.headers
-
 
 def parse_incoming_request(data: bytes) -> Request:
     # GET /index.html HTTP/1.1\r\nHost: localhost:4221\r\nUser-Agent: curl/7.64.1\r\nAccept: */*\r\n\r\n
@@ -53,7 +50,7 @@ def _parse_headers(data: str) -> dict:
             continue
         parts = key_value.split(":")
         if len(parts) != 2:
-            continue  # this is likely the body so we shouldn't ignore it for now
+            continue  # this is likely the body so we should ignore it for now
         headers[parts[0]] = parts[1].strip()
 
     return headers

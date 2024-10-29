@@ -7,19 +7,22 @@ from app.request import Request
 from app.handlers.echo_handler import handle_echo
 from app.handlers.user_agent_handler import handle_user_agent_request
 
+
 def main():
     server_socket = socket.create_server(("localhost", 4221), reuse_port=True)
-    print("socker created at localhost:4221")
+    print("Server listening at localhost:4221")
 
     while True:
         client, addr = server_socket.accept()  # wait for client
         threading.Thread(target=lambda: handle_incoming_request(client, addr)).start()
+
 
 def handle_incoming_request(client, addr):
     data = client.recv(4096)
     request = parse_incoming_request(data)
     route_request(request, client)
     client.close()
+
 
 def route_request(request: Request, client):
     # TODO: come up with better routing later
